@@ -1,5 +1,8 @@
 Walmart Grocery Class:
 
+first:
+Make sure the script can run on a server (non-desktop) version of ubuntu
+
 (1)
 method: add_to_cart
 POST https://grocery.walmart.com/v0.1/api/cart
