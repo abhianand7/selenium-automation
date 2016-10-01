@@ -1,0 +1,22 @@
+Walmart Grocery Class:
+
+(1)
+method: add_to_cart
+POST https://grocery.walmart.com/v0.1/api/cart
+A method that takes a list of integers (item numbers) and adds all the items to the shopping cart.
+Returns true if the items have been successfully added to the logged in user's shopping cart.
+Returns false if any errors occur.
+POST data example:
+[{"skuId":"3000011733","quantity":1}]
+
+(2)
+method: get_cart
+GET https://grocery.walmart.com/v0.1/api/cart
+Takes no parameters but returns the same JSON object that was retrieved from the GET request
+Return value example:
+{"id":"406485340","items":[{"data":{"id":"3000014678","status":"A","name":"Bananas, 1 lb.","maxAllowed":100,"showNotAvailable":false,"images":{"thumbnail":"http://t9.wal.co/i/p/00/74/92/89/00/0074928900002_150X150.jpg-f6ea6212af89e595a8031fd0f104960bc90ff249-optim-150x150.jpg","small":"http://t9.wal.co/i/p/00/74/92/89/00/0074928900002_150X150.jpg-f6ea6212af89e595a8031fd0f104960bc90ff249-optim-150x150.jpg","large":"http://t9.wal.co/i/p/00/74/92/89/00/0074928900002_215X215.jpg-9fac9ce45c366a812bb39e9337cd14059943734c-optim-215x215.jpg"},"isOutOfStock":false},"price":{"list":0.52,"priceUnitOfMeasure":"LB","salesUnitOfMeasure":"LB","salesQuantity":1,"unit":0.52,"isRollback":false,"isClearance":false},"total":0.52,"quantity":1}],"minimumTotalForCheckout":30,"total":0.52}
+
+(3)
+Test program that runs periodically to ensure stability of the script.
+It should perform all avaliable tasks and take some kind of action to alert the administrator of problems.
+Possibly email alert, but that can be added in later.
