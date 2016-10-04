@@ -23,3 +23,40 @@ Return value example:
 Test program that runs periodically to ensure stability of the script.
 It should perform all avaliable tasks and take some kind of action to alert the administrator of problems.
 Possibly email alert, but that can be added in later.
+
+Initial website views:
+-Home page
+  *This will contain images/videos and marketing/introduction data as well as navigation to other pages
+-User login
+  *Simple login form and link to registration page
+-User registration
+  *Basic user registration:
+    -First name
+    -Last name
+    -date of birth
+    -zip code (US only)
+    -gender
+    -email
+    -confirm email
+    -password
+    -confirm password
+  *Email link to confirm account before activating account
+-User profile/password management
+  *change any user settings except name and date of birth
+  *History of recipes added to shopping carts
+-Recipe browse page(s)
+  *sidebar with recipe categories
+  *featured recipes on main body with images
+-Recipe page (dynamic page that gets populated with recipe data and images or videos for an unspecified number of available recipes from the database)
+  *Recipe overview
+  *ingredients (with add to cart link)
+  *steps for preparation
+-Add ingredients to cart page (for now only Walmart grocery will be avaiable, but placeholders for other grocery services)
+  *Grid of avaiable providers
+  *Walmart link prompts for your Walmart email and password (which is not stored)
+  *Items are added to the card using the walmart Class
+  *Record in DB the ingredients ordered and the source recipe
+
+Visual design of the website should be fairly simple and will mimick www.blueapron.com, which is the website I wish to compete with.
+It doesn't need to be as fancy as the Blue Apron website, but when in doubt, use that as a style reference. I will come up with some mocks
+later when we are more concerned about visual design.
