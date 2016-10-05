@@ -30,6 +30,8 @@ process_items = ItemProcess()
 # by using below method you can fetch the contents of cart and verify
 process_items.add_item_to_cart([[3000038027, 2], [1025774, 2]])
 
+# you can fetch the items added to your cart and verify
+process_items.list_cart_items()
 #
 # for searching any item
 # walmart.search('banana')
