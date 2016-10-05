@@ -229,12 +229,12 @@ class Session(WalMart):
 
 
 class ItemProcess(Session):
-    def get_items(self, sku_Ids):
+    def add_item_to_cart(self, sku_Ids):
         for i in sku_Ids:
             skuId = i[0]
             quantity = i[1]
             self.browser.get(self.product_url + skuId)
-            self.add_item_to_cart(skuId, quantity)
+            self.add(skuId, quantity)
 
     def get_cart(self):
         self.browser.get('https://grocery.walmart.com/v0.1/api/cart')
@@ -273,7 +273,7 @@ class ItemProcess(Session):
     # add to cart method will be speeded up by using multithreading and multiprocessing,
     # so the same amount of time will be taken for 1 as for 10, depending upon number of threads,
     # right now its one at a time
-    def add_item_to_cart(self, sku_Id, quantity):
+    def add(self, sku_Id, quantity):
         add_cart_button = self.browser.find_element_by_xpath("//shadow/form/button[contains(@class,'a2c__cta')]")
         add_cart_button.click()
         if quantity > 1:
