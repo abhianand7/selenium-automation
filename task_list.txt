@@ -24,8 +24,19 @@ Test program that runs periodically to ensure stability of the script.
 It should perform all avaliable tasks and take some kind of action to alert the administrator of problems.
 Possibly email alert, but that can be added in later.
 (all of the estimates below mentioned is by assuming 3 to 4 hour of work per day), if needs to get this done more quick, can be discussed
+
+Below is the plan for web development
+components ot be used:
+1. Django-CMS (Intial goal is to display recepies and redirect them to grocery store for purchase)
+2. Django-Oscar(Will be added afterwards, after properly reviewing the intial launch of the website and what exaclty is needed
+    for this specific purpose)
+3. Python-Django framework (basic need for Django)
+4. Server(Initial developement will be done locally)
+5. AWS - Need to setup an AWS server with ubuntu
+6. Sql Server stup (for now local)
+
 Initial website views:
--Home page (back-end will be quick for this, front requires a little time, approx 3 to 4 days for this)
+-Home page (back-end will be quick for this, front requires a little time, approx 2 days for this)
   *This will contain images/videos and marketing/introduction data as well as navigation to other pages
 -User login (at max 2 days, this seems to be quick job but may take more time as, this requires sql mapping with user credentials)
   *Simple login form and link to registration page
@@ -42,23 +53,21 @@ Initial website views:
     -confirm password
   *Email link to confirm account before activating account
 -User profile/password management 
-  (this is vague right now, will highly depend what kind of settings we are refferring to. 
-  since this is dynamic in nature, this might take the most time of all. for starters lets say, it will take around 5 days)
+  (Initially since the website will have no option for add ot cart but rather redirecting to another server,
+  for now we will display only history of recepies browsed and the items associated with it)  (this will take no more than 2 to 3days)
   *change any user settings except name and date of birth
   *History of recipes added to shopping carts
 -Recipe browse page(s) 
-  (lot of backend mappings, depends on size of recepie data base, 
-  initially for small database say 100 recepie, it will take 5 to 6 days )
+  (very easy to do with CMS, just drag and drop content, will take at max 2 days depending on the number of recepies)
   *sidebar with recipe categories
   *featured recipes on main body with images
--Recipe page (dynamic page that gets populated with recipe data and images or videos for an unspecified number of available recipes from the database)
-  (since each recepie will be different, it will take the longest time of all, very much dependednt on the number of recepies.
-    initially lets say it will take 10 days.)
+-Recipe page (as talked and this will take less time as it will be provided, just need to rearraneg a little bit, so at max 4 to 5 days)
   *Recipe overview
-  *ingredients (with add to cart link)
+  *ingredients (with add to cart link)  (I will also add a '+' button for the user to add the ingredients to cart individually as well
+  so that, in case they have some the ingredients at their house they dont have to add to cart all of the items)
   *steps for preparation
 -Add ingredients to cart page (for now only Walmart grocery will be avaiable, but placeholders for other grocery services)
-  (it will take around 7 days.)
+  (bacckground script will be running continoulsy to make this process quick, already under development)
   *Grid of avaiable providers
   *Walmart link prompts for your Walmart email and password (which is not stored)
   *Items are added to the card using the walmart Class
