@@ -49,6 +49,7 @@ class WalMart:
             # self.browser = webdriver.PhantomJS()
             # uncomment the below line for Chrome Browser
             # self.browser = webdriver.Chrome()
+            # self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
             # uncomment the below line for Edge Browser
             # self.browser = webdriver.Edge()
             # uncomment the below line for Opera Browser
@@ -98,10 +99,11 @@ class Session(WalMart):
             pwd.send_keys(password)
             # click to login
             self.browser.find_element_by_class_name('submit').click()
-            user_name = self.get_name()
+            time.sleep(1)
+            user_info = self.get_user_info()
             # make sure that login is successful
-            if user_name.lower() != 'guest':
-                print 'logged in as %s' % user_name
+            if user_info['status'] == 'registered':
+                print 'logged in as %s' % user_info['firstName']
                 start = time.time()
                 while time.time() - start < 5:
                     pass
