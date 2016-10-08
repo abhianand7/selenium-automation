@@ -5,6 +5,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+# very important to make it work with firefox
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import datetime
 import sys
 import time
@@ -14,13 +16,9 @@ from lxml import html
 import pickle
 # for creating a virtual display
 from pyvirtualdisplay import Display
-
-# base_url = 'http://grocery.walmart.com/'
-# signout_url = 'usd-estore/register/signoutcontainer.jsp'
-# signin_url = 'usd-estore/m/register/signin-only.jsp'
-# home_url = 'usd-estore/m/home.jsp'
 display = Display(visible=0, size=(1024, 768))
 display.start()
+
 
 # flags used in this script
 # this flag indicates whether the current session is a logged in session
@@ -31,6 +29,23 @@ cookies_loaded_flag = False
 # some global variables used
 login_attempt = 0
 
+# Firefox selenium update
+# currently from firefox version 48, the support for firefox webdriver has been depricated
+# firefox now provides a separate webdriver built by itself that runs along with firefox and it is called
+# marionette and its driver are called geckodriver but still selenium looks for wires executable
+# so download the geckodriver from url 'https://github.com/mozilla/geckodriver/releases' and rename it to 'wires'
+# put it onto system PATH variable or simply put it into bin directory inside home as .profile automatically identifies
+# bin directory inside home
+caps = DesiredCapabilities.FIREFOX
+caps["marionette"] = True
+caps["binary"] = "/usr/bin/firefox"
+
+# Phantomjs working solution
+# download the phantomjs from
+# http://phantomjs.org/download.html
+# don't install it directly from ubuntu repo, as that has bugs in it
+# again put it into your bin directory of home
+# and logout and login again, phantomjs will work
 
 # base class setup for other objects to inherit
 class WalMart:
@@ -41,12 +56,12 @@ class WalMart:
         self.home_url = home_url
         self.product_url = product_url
         try:
-            self.browser = webdriver.Firefox()
+            # self.browser = webdriver.Firefox(capabilities=caps)
             # uncomment one of the following lines to test with a specific browser
             # in order to test with that particular browser you have it installed on your system
             # otherwise leave it as unchanged
             # uncomment the below line for PhantomJS a headless javascript enabled browser
-            # self.browser = webdriver.PhantomJS()
+            self.browser = webdriver.PhantomJS()
             # uncomment the below line for Chrome Browser
             # self.browser = webdriver.Chrome()
             # self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
