@@ -15,9 +15,9 @@ from lxml import html
 # for saving cookies
 import pickle
 # for creating a virtual display
-from pyvirtualdisplay import Display
-display = Display(visible=0, size=(1024, 768))
-display.start()
+# from pyvirtualdisplay import Display
+# display = Display(visible=0, size=(1024, 768))
+# display.start()
 
 
 # flags used in this script
