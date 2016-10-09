@@ -8,4 +8,5 @@
 2. splitting the WalMart.py into smaller and more cleaner modules
 3. a complete json parser on the way to handle all the data paresing
 4. adding multi-threading and multiprocessing capability to cater multiple requests at the same time
-5. more to come
+5. all the print statements used as of now will be moved to debug info
+6.

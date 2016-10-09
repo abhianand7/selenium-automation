@@ -117,20 +117,16 @@ class Session(WalMart):
             # click to login
             self.browser.find_element_by_class_name('submit').click()
             time.sleep(1)
-            user_info = self.get_user_info()
             # make sure that login is successful
-            if user_info['status'] == 'registered':
-                print 'logged in as %s' % user_info['firstName']
-                start = time.time()
-                while time.time() - start < 5:
-                    pass
+            if self.user_status():
+                print 'logged in as %s' % self.parse_user_info(FirstName=True)['FirstName']
+                time.sleep(5)
                 # save the cookies of this session
                 pickle.dump(self.browser.get_cookies(), open("cookies.pkl", "wb"))
                 session_active_flag = True
                 return session_active_flag
             else:
                 session_active_flag = False
-                print "login failed\n retrying"
                 if login_attempt == 3:
                     print 'exiting login failed\nplease try again\nverify your login credentials'
                     self.close()
@@ -211,30 +207,39 @@ class Session(WalMart):
     def take_screenshot(self):
         self.browser.save_screenshot('screen.png')
 
-    # call this method to get the current profile name of the logged person
-    def get_user_info(self):
+    # load the user profile
+    def get_profile(self):
+        # request needs to be used here as there is no need for selenium for this particular action
         self.browser.get(self.base_url + '/v0.1/api/profile')
-        # source = self.view_page_source()
-        # tree = html.fromstring(source)
         json_resp = self.browser.find_element_by_xpath("//pre").text
-        # user_info = tree.xpath('/html/body/pre/text()')[0]
-        return json.loads(json_resp)        # no need to use str method, it is already in unicode format
+        return json.loads(json_resp)  # no need to use str method, it is already in unicode format
+
+    # get status if user is logged in
+    def user_status(self):
+        profile = self.get_profile()
+        status = True if profile['status'] == 'registered' else False
+        return status
+
     # to be replaced by json_parser(upcoming)
 
     def parse_user_info(self, FirstName=False, LastName=False, Email=False, Status=False, Id=False, Addresses=False):
-        json_data = self.get_user_info()
+        user_data = self.get_profile()
+        # print json_data
         req_details = [FirstName, LastName, Email, Status, Id, Addresses]
-        first_name = json_data['firstName']
-        last_name = json_data['lastName']
-        email_address = json_data['emailAddress']
-        status = json_data['status']
-        id = json_data['id']
-        address = json_data['addresses']
-        store_details = [first_name, last_name, email_address, status, id, address]
-        # this will return all the fields requested by you in form of dictionary
-        return {['FirstName', 'LastName', 'Email', 'Status', 'Id', 'Address'][index]: store_details[index]
-                for index, i in enumerate(req_details) if i}
-
+        status = user_data['status']
+        if status == 'registered':
+            first_name = user_data['firstName']
+            last_name = user_data['lastName']
+            email_address = user_data['emailAddress']
+            id = user_data['id']
+            address = user_data['addresses']
+            store_details = [first_name, last_name, email_address, status, id, address]
+            # this will return all the fields requested by you in form of dictionary
+            return {['FirstName', 'LastName', 'Email', 'Status', 'Id', 'Address'][index]: store_details[index]
+                    for index, i in enumerate(req_details) if i}
+        else:
+            return {'Status': status}
+    # removed
     # will remove get_name in the next version
     # def get_name(self):
     #     return self.browser.find_element_by_class_name('navbar__callout-text').find_element_by_class_name(
