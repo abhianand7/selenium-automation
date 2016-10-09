@@ -220,19 +220,25 @@ class Session(WalMart):
         # user_info = tree.xpath('/html/body/pre/text()')[0]
         return json.loads(json_resp)        # no need to use str method, it is already in unicode format
     # to be replaced by json_parser(upcoming)
-    def parse_user_info(self):
+
+    def parse_user_info(self, FirstName=False, LastName=False, Email=False, Status=False, Id=False, Addresses=False):
         json_data = self.get_user_info()
+        req_details = [FirstName, LastName, Email, Status, Id, Addresses]
         first_name = json_data['firstName']
         last_name = json_data['lastName']
         email_address = json_data['emailAddress']
         status = json_data['status']
         id = json_data['id']
-
+        address = json_data['addresses']
+        store_details = [first_name, last_name, email_address, status, id, address]
+        # this will return all the fields requested by you in form of dictionary
+        return {['FirstName', 'LastName', 'Email', 'Status', 'Id', 'Address'][index]: store_details[index]
+                for index, i in enumerate(req_details) if i}
 
     # will remove get_name in the next version
-    def get_name(self):
-        return self.browser.find_element_by_class_name('navbar__callout-text').find_element_by_class_name(
-            'ng-binding').text
+    # def get_name(self):
+    #     return self.browser.find_element_by_class_name('navbar__callout-text').find_element_by_class_name(
+    #         'ng-binding').text
 
     # get the current url of the webpage you are interacting with
     def get_url(self):
