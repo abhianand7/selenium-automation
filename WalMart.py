@@ -58,12 +58,12 @@ class WalMart:
         self.home_url = home_url
         self.product_url = product_url
         try:
-            # self.browser = webdriver.Firefox(capabilities=caps)
+            self.browser = webdriver.Firefox(capabilities=caps)
             # uncomment one of the following lines to test with a specific browser
             # in order to test with that particular browser you have it installed on your system
             # otherwise leave it as unchanged
             # uncomment the below line for PhantomJS a headless javascript enabled browser
-            self.browser = webdriver.PhantomJS()
+            # self.browser = webdriver.PhantomJS()
             # uncomment the below line for Chrome Browser
             # self.browser = webdriver.Chrome()
             # self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
@@ -116,11 +116,11 @@ class Session(WalMart):
             pwd.send_keys(password)
             # click to login
             self.browser.find_element_by_class_name('submit').click()
-            time.sleep(1)
+            time.sleep(10)
             # make sure that login is successful
             if self.user_status():
                 print 'logged in as %s' % self.parse_user_info(FirstName=True)['FirstName']
-                time.sleep(5)
+                # time.sleep(5)
                 # save the cookies of this session
                 pickle.dump(self.browser.get_cookies(), open("cookies.pkl", "wb"))
                 session_active_flag = True
@@ -128,14 +128,13 @@ class Session(WalMart):
             else:
                 session_active_flag = False
                 if login_attempt == 3:
-                    print 'exiting login failed\nplease try again\nverify your login credentials'
-                    self.close()
+                    print 'exiting, login failed\nplease try again\nverify your login credentials'
+                    self.close(1)
                     return session_active_flag
                 else:
                     login_attempt += 1
                     print "login failed\nretrying"
                     self.login(username, password)
-
 
     def search(self, query):
         try:
@@ -218,6 +217,7 @@ class Session(WalMart):
     # get status if user is logged in
     def user_status(self):
         profile = self.get_profile()
+        print profile
         status = True if profile['status'] == 'registered' else False
         return status
 
@@ -273,7 +273,7 @@ class Session(WalMart):
 class ItemProcess(Session):
     def add_item_to_cart(self, sku_Ids):
         for i in sku_Ids:
-            skuId = i[0]
+            skuId = str(i[0])
             quantity = i[1]
             self.browser.get(self.product_url + skuId)
             self.add(skuId, quantity)
