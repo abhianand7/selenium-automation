@@ -1,0 +1,11 @@
+# this list contains the changes that will be made in the main WalMart.py script
+# for better sustainability of the script and performance improvement
+# so requests library will be included from now on, where ever it is not required
+# to interact with JavaScript as, selenium takes considerable amount of resources which
+# can become bottle neck during scale up
+1. request and selenium switching, wherever selenium is not required, the cookies can be exchanges between these two
+  to continue being logged in
+2. splitting the WalMart.py into smaller and more cleaner modules
+3. a complete json parser on the way to handle all the data paresing
+4. adding multi-threading and multiprocessing capability to cater multiple requests at the same time
+5. more to come

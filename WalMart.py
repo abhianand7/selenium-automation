@@ -11,7 +11,8 @@ import datetime
 import sys
 import time
 import json
-from lxml import html
+
+# from lxml import html
 # for saving cookies
 import pickle
 # for creating a virtual display
@@ -46,6 +47,7 @@ caps["binary"] = "/usr/bin/firefox"
 # don't install it directly from ubuntu repo, as that has bugs in it
 # again put it into your bin directory of home
 # and logout and login again, phantomjs will work
+
 
 # base class setup for other objects to inherit
 class WalMart:
@@ -134,6 +136,7 @@ class Session(WalMart):
                     self.close()
                     return session_active_flag
                 else:
+                    print "login failed\nretrying"
                     self.login(username, password)
                     login_attempt += 1
 
@@ -211,10 +214,20 @@ class Session(WalMart):
     # call this method to get the current profile name of the logged person
     def get_user_info(self):
         self.browser.get(self.base_url + '/v0.1/api/profile')
-        source = self.view_page_source()
-        tree = html.fromstring(source)
-        user_info = tree.xpath('/html/body/pre/text()')[0]
-        return json.loads(str(user_info))
+        # source = self.view_page_source()
+        # tree = html.fromstring(source)
+        json_resp = self.browser.find_element_by_xpath("//pre").text
+        # user_info = tree.xpath('/html/body/pre/text()')[0]
+        return json.loads(json_resp)        # no need to use str method, it is already in unicode format
+    # to be replaced by json_parser(upcoming)
+    def parse_user_info(self):
+        json_data = self.get_user_info()
+        first_name = json_data['firstName']
+        last_name = json_data['lastName']
+        email_address = json_data['emailAddress']
+        status = json_data['status']
+        id = json_data['id']
+
 
     # will remove get_name in the next version
     def get_name(self):

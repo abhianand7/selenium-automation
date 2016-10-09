@@ -8,7 +8,7 @@ signin_url = 'usd-estore/m/register/signin-only.jsp'
 home_url = 'usd-estore/m/home.jsp'
 product_url = 'http://grocery.walmart.com/usd-estore/m/product-detail.jsp?skuId='
 # initialize the session
-walmart = Session(base_url, signin_url, home_url, signout_url)
+walmart = Session(base_url, signin_url, home_url, signout_url, product_url)
 
 
 # use this method when you are accessing the web page for the first time
