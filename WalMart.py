@@ -132,9 +132,10 @@ class Session(WalMart):
                     self.close()
                     return session_active_flag
                 else:
+                    login_attempt += 1
                     print "login failed\nretrying"
                     self.login(username, password)
-                    login_attempt += 1
+
 
     def search(self, query):
         try:
