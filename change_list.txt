@@ -6,7 +6,7 @@
 1. request and selenium switching, wherever selenium is not required, the cookies can be exchanges between these two
   to continue being logged in
 2. splitting the WalMart.py into smaller and more cleaner modules
-3. a complete json parser on the way to handle all the data paresing
+3. a complete json parser on the way to handle all the data parsing
 4. adding multi-threading and multiprocessing capability to cater multiple requests at the same time
 5. all the print statements used as of now will be moved to debug info
 6.

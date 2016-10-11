@@ -107,7 +107,6 @@ class Session(WalMart):
             WebDriverWait(self.browser, 10).until(element_present)
         except TimeoutException:
             logging.error('Session.login - page load timeout')
-            print "Timed out waiting for page to load"
             self.close(1)
         else:
             # self.take_screenshot(name='login_page')
@@ -132,8 +131,6 @@ class Session(WalMart):
             # make sure that login is successful
             if self.user_status():
                 logging.debug('Session.login - logged in as {}'.format(self.parse_user_info(FirstName=True)['FirstName']))
-                print 'logged in as %s' % self.parse_user_info(FirstName=True)['FirstName']
-                # time.sleep(5)
                 # save the cookies of this session
                 pickle.dump(self.browser.get_cookies(), open("cookies.pkl", "wb"))
                 session_active_flag = True
@@ -142,13 +139,11 @@ class Session(WalMart):
                 session_active_flag = False
                 if login_attempt == 3:
                     logging.error('Session.login - giving up after login attempts')
-                    print 'exiting, login failed\nplease try again\nverify your login credentials'
                     self.close(1)
                     return session_active_flag
                 else:
                     login_attempt += 1
                     logging.warning('Session.login - login failure, retrying')
-                    print "login failed\nretrying"
                     self.login(username, password)
 
     def search(self, query):
@@ -157,16 +152,13 @@ class Session(WalMart):
             WebDriverWait(self.browser, 10).until(element_present)
         except TimeoutException:
             logging.error('Session.search - page load timeout')
-            print "Timed out waiting for page to load\nPlease check your Internet Connection"
             self.close(1)
         except selenium.common.exceptions.ElementNotVisibleException as e:
             # handle this exception in case of error
             logging.error('Sessin.search - ElementNotVisibleException: {}'.format(e))
-            print e
         except selenium.common.exceptions.NoSuchElementException as e:
             # handle this exception when page loading fails
             logging.error('Sessin.search - NoSuchElementException: {}'.format(e))
-            print e
         else:
             # clear any pre-filled values
             self.browser.find_element_by_id('searchInput').clear()
@@ -178,7 +170,7 @@ class Session(WalMart):
             search_input.send_keys(query)
             # click it to start searching
             button.click()
-            print 'search done'
+            logging.info('search done')
             return True
 
     def save_cookies(self, file_name=''):
@@ -196,21 +188,13 @@ class Session(WalMart):
         except IOError:
             logging.error('Session.load_prev_session - IOError, cookies not present')
             print 'cookies not present'
-            return False #assume no direct console access
-            #print 'first login to create cookies\nredirecting to login'
-            #username = raw_input('Enter Your Email Address: ')
-            #password = raw_input('Enter Password: ')
-            #self.login(username, password)
+            return False
         else:
             try:
                 cookies = pickle.load(fobj)
             except EOFError:
                 logging.error('Session.load_prev_session - EOFError, cookies not valid')
                 return False
-                #print 'cookies empty\nlogin first\nredirecting to login'
-                #username = raw_input('Enter Your Email Address: ')
-                #password = raw_input('Enter Password: ')
-                #self.login(username, password)
             else:
                 try:
                     # get the url for which cookie was saved
@@ -223,10 +207,6 @@ class Session(WalMart):
                 except selenium.common.exceptions.InvalidCookieDomainException:
                     logging.error('Session.load_prev_session - InvalidCookieDomainException')
                     return False
-                    #print 'Invalid cookies\nredirecting to login'
-                    #username = raw_input('Enter Your Email Address: ')
-                    #password = raw_input('Enter Password: ')
-                    #self.login(username, password)
 
     def take_screenshot(self, name=''):
         self.browser.save_screenshot(name + 'screen.png')
@@ -281,18 +261,14 @@ class Session(WalMart):
     def sign_out(self):
         self.browser.get(self.base_url + self.signout_url)
         logging.debug('Session.sign_out - signed out')
-        print 'signed out'
 
     # call this method to close the current session
     def close(self, status=0):
         logging.debug('closing and quitting this session')
-        print 'closing and quitting this session'
         self.browser.close()
         self.browser.quit()
         # sys.exit(status) #I don't know if we want to exit when we close the browser
 
-
-class ItemProcess(WalMart):
     def add_item_to_cart(self, sku_Ids):
         for i in sku_Ids:
             skuId = str(i[0])
@@ -334,7 +310,7 @@ class ItemProcess(WalMart):
             print "Cart Empty"
             return None
 
-    # add to cart method will be speeded up by using multithreading and multiprocessing,
+    # add to cart method will speed up by using multi-threading and multiprocessing,
     # so the same amount of time will be taken for 1 as for 10, depending upon number of threads,
     # right now its one at a time
     def add(self, sku_Id, quantity):
