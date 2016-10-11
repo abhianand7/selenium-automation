@@ -125,12 +125,9 @@ class Session(WalMart):
             pwd.send_keys(password)
             # click to login
             self.browser.find_element_by_class_name('submit').click()
-<<<<<<< HEAD
             time.sleep(10)
             self.take_screenshot(name='filled_login')
-=======
             time.sleep(10) #TODO: make sure this needs to be here
->>>>>>> 3875d5e0accb8fca3c555e05afaacd379d07a262
             # make sure that login is successful
             if self.user_status():
                 logging.debug('Session.login - logged in as {}'.format(self.parse_user_info(FirstName=True)['FirstName']))
@@ -245,12 +242,9 @@ class Session(WalMart):
         profile = self.get_profile()
         # print profile
         status = True if profile['status'] == 'registered' else False
-<<<<<<< HEAD
         # print status
-=======
         if not status:
             logging.warning('Session.user_status: {}'.format(status))
->>>>>>> 3875d5e0accb8fca3c555e05afaacd379d07a262
         return status
 
     # to be replaced by json_parser(upcoming)
