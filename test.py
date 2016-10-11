@@ -25,13 +25,13 @@ walmart.login('jeffreylunt@gmail.com', 'temp_dev')
 # below is the method to add items to cart
 # you have to provide data in list of sku id
 # [[skuid, quantity], [skuid, quantity]]
-# process_items = ItemProcess(base_url,signin_url, home_url, signout_url, product_url)
+process_items = ItemProcess(base_url,signin_url, home_url, signout_url, product_url)
 
 # by using below method you can fetch the contents of cart and verify
 # process_items.add_item_to_cart([[3000038027, 2], [1025774, 2]])
 
 # you can fetch the items added to your cart and verify
-# process_items.list_cart_items()
+process_items.list_cart_items()
 #
 # for searching any item
 # walmart.search('banana')
@@ -66,6 +66,7 @@ walmart.close()
 # use below code to save your cookies automatically
 def exit_handler():
     walmart.save_cookies()
+    print 'saving cookie'
     return
 
-#atexit.register(exit_handler())
+# atexit.register(exit_handler())

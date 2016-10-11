@@ -7,7 +7,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 # very important to make it work with firefox
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import datetime
 import sys
 import time
 import json
@@ -40,7 +39,8 @@ login_attempt = 0
 caps = DesiredCapabilities.FIREFOX
 caps["marionette"] = True
 caps["binary"] = "/usr/bin/firefox"
-
+dcaps = DesiredCapabilities.PHANTOMJS
+dcaps['phantomjs.page.settings.userAgent'] = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0) Gecko/20121026 Firefox/16.0'
 # Phantomjs working solution
 # download the phantomjs from
 # http://phantomjs.org/download.html
@@ -63,7 +63,12 @@ class WalMart:
             # in order to test with that particular browser you have it installed on your system
             # otherwise leave it as unchanged
             # uncomment the below line for PhantomJS a headless javascript enabled browser
-            # self.browser = webdriver.PhantomJS()
+            # self.browser = webdriver.PhantomJS(
+            #     desired_capabilities=dcaps,
+            #     service_args=['--ignore-ssl-errors=true', '--ssl-protocol=ANY'],
+            #     # executable_path= '/home/trusty/bin/phantomjs'
+            #     # '/home/trusty/.nvm/versions/node/v5.0.0/lib/node_modules/phantomjs/lib/phantom/bin/phantomjs'
+            # )
             # uncomment the below line for Chrome Browser
             # self.browser = webdriver.Chrome()
             # self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver')
@@ -102,6 +107,7 @@ class Session(WalMart):
             print "Timed out waiting for page to load"
             self.close(1)
         else:
+            self.take_screenshot(name='login_page')
             # clear the username field of the signin page, if filled from before
             self.browser.find_element_by_id('emailAddress').clear()
             # clear any previous values prensent in password field
@@ -117,6 +123,7 @@ class Session(WalMart):
             # click to login
             self.browser.find_element_by_class_name('submit').click()
             time.sleep(10)
+            self.take_screenshot(name='filled_login')
             # make sure that login is successful
             if self.user_status():
                 print 'logged in as %s' % self.parse_user_info(FirstName=True)['FirstName']
@@ -204,8 +211,8 @@ class Session(WalMart):
                     password = raw_input('Enter Password: ')
                     self.login(username, password)
 
-    def take_screenshot(self):
-        self.browser.save_screenshot('screen.png')
+    def take_screenshot(self, name=''):
+        self.browser.save_screenshot(name + 'screen.png')
 
     # load the user profile
     def get_profile(self):
@@ -217,8 +224,9 @@ class Session(WalMart):
     # get status if user is logged in
     def user_status(self):
         profile = self.get_profile()
-        print profile
+        # print profile
         status = True if profile['status'] == 'registered' else False
+        # print status
         return status
 
     # to be replaced by json_parser(upcoming)
@@ -240,13 +248,6 @@ class Session(WalMart):
                     for index, i in enumerate(req_details) if i}
         else:
             return {'Status': status}
-    # removed
-    # will remove get_name in the next version
-    # def get_name(self):
-    #     return self.browser.find_element_by_class_name('navbar__callout-text').find_element_by_class_name(
-    #         'ng-binding').text
-
-    # get the current url of the webpage you are interacting with
     def get_url(self):
         url = self.browser.current_url
         # print url
@@ -270,7 +271,7 @@ class Session(WalMart):
         sys.exit(status)
 
 
-class ItemProcess(Session):
+class ItemProcess(WalMart):
     def add_item_to_cart(self, sku_Ids):
         for i in sku_Ids:
             skuId = str(i[0])
