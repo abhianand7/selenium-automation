@@ -11,6 +11,7 @@ import datetime
 import sys
 import time
 import json
+import logging
 
 # from lxml import html
 # for saving cookies
@@ -78,6 +79,7 @@ class WalMart:
             self.browser.maximize_window()
             # self.browser.implicitly_wait(30)
         except selenium.common.exceptions.WebDriverException as e:
+            logging.error('selenium exception: {}'.format(e))
             print e
             print "browser error\ncheck if your browser is up-to-date"
 
@@ -99,6 +101,7 @@ class Session(WalMart):
             element_present = EC.presence_of_element_located((By.ID, 'emailAddress'))
             WebDriverWait(self.browser, 10).until(element_present)
         except TimeoutException:
+            logging.error('Session.login - page load timeout')
             print "Timed out waiting for page to load"
             self.close(1)
         else:
@@ -116,9 +119,10 @@ class Session(WalMart):
             pwd.send_keys(password)
             # click to login
             self.browser.find_element_by_class_name('submit').click()
-            time.sleep(10)
+            time.sleep(10) #TODO: make sure this needs to be here
             # make sure that login is successful
             if self.user_status():
+                logging.debug('Session.login - logged in as {}'.format(self.parse_user_info(FirstName=True)['FirstName']))
                 print 'logged in as %s' % self.parse_user_info(FirstName=True)['FirstName']
                 # time.sleep(5)
                 # save the cookies of this session
@@ -128,11 +132,13 @@ class Session(WalMart):
             else:
                 session_active_flag = False
                 if login_attempt == 3:
+                    logging.error('Session.login - giving up after login attempts')
                     print 'exiting, login failed\nplease try again\nverify your login credentials'
                     self.close(1)
                     return session_active_flag
                 else:
                     login_attempt += 1
+                    logging.warning('Session.login - login failure, retrying')
                     print "login failed\nretrying"
                     self.login(username, password)
 
@@ -141,13 +147,16 @@ class Session(WalMart):
             element_present = EC.presence_of_element_located((By.ID, 'searchInput'))
             WebDriverWait(self.browser, 10).until(element_present)
         except TimeoutException:
+            logging.error('Session.search - page load timeout')
             print "Timed out waiting for page to load\nPlease check your Internet Connection"
             self.close(1)
         except selenium.common.exceptions.ElementNotVisibleException as e:
             # handle this exception in case of error
+            logging.error('Sessin.search - ElementNotVisibleException: {}'.format(e))
             print e
         except selenium.common.exceptions.NoSuchElementException as e:
             # handle this exception when page loading fails
+            logging.error('Sessin.search - NoSuchElementException: {}'.format(e))
             print e
         else:
             # clear any pre-filled values
@@ -176,19 +185,23 @@ class Session(WalMart):
             fobj = open(file_name + 'cookies.pkl', 'rb')
         # handle the error where cookie file does not exist
         except IOError:
+            logging.error('Session.load_prev_session - IOError, cookies not present')
             print 'cookies not present'
-            print 'first login to create cookies\nredirecting to login'
-            username = raw_input('Enter Your Email Address: ')
-            password = raw_input('Enter Password: ')
-            self.login(username, password)
+            return False #assume no direct console access
+            #print 'first login to create cookies\nredirecting to login'
+            #username = raw_input('Enter Your Email Address: ')
+            #password = raw_input('Enter Password: ')
+            #self.login(username, password)
         else:
             try:
                 cookies = pickle.load(fobj)
             except EOFError:
-                print 'cookies empty\nlogin first\nredirecting to login'
-                username = raw_input('Enter Your Email Address: ')
-                password = raw_input('Enter Password: ')
-                self.login(username, password)
+                logging.error('Session.load_prev_session - EOFError, cookies not valid')
+                return False
+                #print 'cookies empty\nlogin first\nredirecting to login'
+                #username = raw_input('Enter Your Email Address: ')
+                #password = raw_input('Enter Password: ')
+                #self.login(username, password)
             else:
                 try:
                     # get the url for which cookie was saved
@@ -199,10 +212,12 @@ class Session(WalMart):
                     self.browser.get(self.base_url + self.home_url)
                 # handle the exception where cookie is invalid or is of different url
                 except selenium.common.exceptions.InvalidCookieDomainException:
-                    print 'Invalid cookies\nredirecting to login'
-                    username = raw_input('Enter Your Email Address: ')
-                    password = raw_input('Enter Password: ')
-                    self.login(username, password)
+                    logging.error('Session.load_prev_session - InvalidCookieDomainException')
+                    return False
+                    #print 'Invalid cookies\nredirecting to login'
+                    #username = raw_input('Enter Your Email Address: ')
+                    #password = raw_input('Enter Password: ')
+                    #self.login(username, password)
 
     def take_screenshot(self):
         self.browser.save_screenshot('screen.png')
@@ -217,8 +232,10 @@ class Session(WalMart):
     # get status if user is logged in
     def user_status(self):
         profile = self.get_profile()
-        print profile
+        # print profile
         status = True if profile['status'] == 'registered' else False
+        if not status:
+            logging.warning('Session.user_status: {}'.format(status))
         return status
 
     # to be replaced by json_parser(upcoming)
@@ -260,10 +277,12 @@ class Session(WalMart):
     # call this method to sign out of your current session
     def sign_out(self):
         self.browser.get(self.base_url + self.signout_url)
+        logging.debug('Session.sign_out - signed out')
         print 'signed out'
 
     # call this method to close the current session
     def close(self, status=0):
+        logging.debug('closing and quitting this session')
         print 'closing and quitting this session'
         self.browser.close()
         self.browser.quit()
