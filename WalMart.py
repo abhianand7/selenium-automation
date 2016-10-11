@@ -272,9 +272,9 @@ class Session(WalMart):
                     for index, i in enumerate(req_details) if i}
         else:
             return {'Status': status}
+
     def get_url(self):
         url = self.browser.current_url
-        # print url
         return url
 
     # print the source of the current web page
