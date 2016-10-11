@@ -267,7 +267,7 @@ class Session(WalMart):
         print 'closing and quitting this session'
         self.browser.close()
         self.browser.quit()
-        sys.exit(status)
+        # sys.exit(status) #I don't know if we want to exit when we close the browser
 
 
 class ItemProcess(Session):
