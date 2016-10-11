@@ -110,7 +110,7 @@ class Session(WalMart):
             print "Timed out waiting for page to load"
             self.close(1)
         else:
-            self.take_screenshot(name='login_page')
+            # self.take_screenshot(name='login_page')
             # clear the username field of the signin page, if filled from before
             self.browser.find_element_by_id('emailAddress').clear()
             # clear any previous values prensent in password field
@@ -126,8 +126,9 @@ class Session(WalMart):
             # click to login
             self.browser.find_element_by_class_name('submit').click()
             time.sleep(10)
-            self.take_screenshot(name='filled_login')
-            time.sleep(10) #TODO: make sure this needs to be here
+            # self.take_screenshot(name='filled_login')
+            # below line is not required
+            # time.sleep(10)
             # make sure that login is successful
             if self.user_status():
                 logging.debug('Session.login - logged in as {}'.format(self.parse_user_info(FirstName=True)['FirstName']))
