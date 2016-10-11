@@ -1,5 +1,5 @@
 import unittest
-from WalMart import Session, ItemProcess
+from WalMart import Session
 
 base_url = 'http://grocery.walmart.com/'
 signout_url = 'usd-estore/register/signoutcontainer.jsp'

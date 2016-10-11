@@ -274,11 +274,13 @@ class Session(WalMart):
             skuId = str(i[0])
             quantity = i[1]
             self.browser.get(self.product_url + skuId)
+            time.sleep(1)
             self.add(skuId, quantity)
 
     def get_cart(self):
         self.browser.get('https://grocery.walmart.com/v0.1/api/cart')
-        json_response = self.browser.find_element_by_xpath("/html/head/body/pre").text
+        time.sleep(1)
+        json_response = self.browser.find_element_by_xpath("//pre").text
         return json_response
 
     # return human readable data for all the items present in the cart
@@ -307,16 +309,23 @@ class Session(WalMart):
             return [item_list, total, min_required]
 
         else:
-            print "Cart Empty"
+            logging.info("Cart Empty")
             return None
 
     # add to cart method will speed up by using multi-threading and multiprocessing,
     # so the same amount of time will be taken for 1 as for 10, depending upon number of threads,
     # right now its one at a time
-    def add(self, sku_Id, quantity):
-        add_cart_button = self.browser.find_element_by_xpath("//shadow/form/button[contains(@class,'a2c__cta')]")
-        add_cart_button.click()
-        if quantity > 1:
-            for i in quantity:
-                inc_button = self.browser.find_element_by_xpath("//button[contains(@class,'a2c__inc')]")
-                inc_button.click()
+    def add(self, sku_Id, quantity=1):
+        try:
+            element_present = EC.presence_of_element_located((By.CLASS_NAME, 'item__content'))
+            WebDriverWait(self.browser, 10).until(element_present)
+        except TimeoutException:
+            logging.error('Session.add_cart - page load timeout')
+        else:
+            for i in range(quantity):
+                try:
+                    inc_button = self.browser.find_element_by_xpath("//button[contains(@class,'a2c__inc')]")
+                    inc_button.click()
+                except selenium.common.exceptions.ElementNotVisibleException as e:
+                    add_cart_button = self.browser.find_element_by_xpath("//button[contains(@class,'a2c__cta')]")
+                    add_cart_button.click()
