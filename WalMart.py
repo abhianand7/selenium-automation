@@ -281,13 +281,19 @@ class Session(WalMart):
         self.browser.get('https://grocery.walmart.com/v0.1/api/cart')
         time.sleep(1)
         json_response = self.browser.find_element_by_xpath("//pre").text
-        return json_response
+        return json.loads(json_response)
+
+    def quantity_in_cart(self, sku):
+        cart = self.get_cart()
+        for item in cart['items']:
+            if str(item['data']['id']) == str(sku):
+                return item['quantity']
+        return 0
 
     # return human readable data for all the items present in the cart
     # with item name, item quantity, item unit price
     def list_cart_items(self):
-        json_data = self.get_cart()
-        parse_json_data = json.loads(json_data)
+        parse_json_data = self.get_cart()
         items = parse_json_data.get('items')
         no_of_different_items = len(items)
         item_list = []
@@ -326,6 +332,7 @@ class Session(WalMart):
                 try:
                     inc_button = self.browser.find_element_by_xpath("//button[contains(@class,'a2c__inc')]")
                     inc_button.click()
+                    time.sleep(1.5)
                 except selenium.common.exceptions.ElementNotVisibleException as e:
                     add_cart_button = self.browser.find_element_by_xpath("//button[contains(@class,'a2c__cta')]")
                     add_cart_button.click()
