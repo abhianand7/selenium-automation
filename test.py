@@ -14,7 +14,7 @@ walmart = Session(base_url, signin_url, home_url, signout_url, product_url)
 # now while logging in, it will itself display, which user has logged in and
 # also if login fails for any reason, the script will try three more times before quitting
 # and it will also make sure the correct user has logged in
-walmart.login('jeffreylunt@gmail.com', 'temp_dev')
+walmart.login('xxxxx@gmail.com', 'password')
 
 # you can fetch the items added to your cart and verify
 # print walmart.list_cart_items()
