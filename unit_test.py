@@ -13,7 +13,7 @@ class WalmartMethods(unittest.TestCase):
 
     def login(self):
         walmart = Session(base_url, signin_url, home_url, signout_url, product_url)        
-        self.assertTrue(walmart.login('jeffreylunt@gmail.com', 'temp_dev'))
+        self.assertTrue(walmart.login('xxxx@gmail.com', 'xxxxx'))
         walmart.save_cookies('unit_test')
         walmart.close()
 
@@ -25,7 +25,7 @@ class WalmartMethods(unittest.TestCase):
 
     def single_add_to_cart(self):
         walmart = Session(base_url, signin_url, home_url, signout_url, product_url)
-        walmart.login('jeffreylunt@gmail.com', 'temp_dev')
+        walmart.login('xxxxx@gmail.com', 'xxxx')
         quantity = walmart.quantity_in_cart(skus['banana'])
         walmart.add_item_to_cart([[skus['banana'], 1]])
         self.assertEqual(quantity+1, walmart.quantity_in_cart(skus['banana']))
@@ -33,7 +33,7 @@ class WalmartMethods(unittest.TestCase):
 
     def multiple_add_to_cart(self):
         walmart = Session(base_url, signin_url, home_url, signout_url, product_url)
-        walmart.login('jeffreylunt@gmail.com', 'temp_dev')
+        walmart.login('xxxxx@xxxx.com', 'xxxx')
         quantity = walmart.quantity_in_cart(skus['banana'])
         walmart.add_item_to_cart([[skus['banana'], 2]])
         self.assertEqual(quantity+2, walmart.quantity_in_cart(skus['banana']))
